@@ -63,6 +63,7 @@ root -l 'run_ana_FEBv2.C(5,508,5000,"/data/gifOctober/roottrees/")'
 
 ### How do I obtain efficiency curves ? 
 Everytime, you run the 'run_ana_FEBv2.C' you will obtain a txt file in outputs directory.  
+
 The script called dreff.py is taking Scan ID and working point arguments to read these files correctly plus the directory for on/out muon window and the HV points (from google sheets).  
 You need to provide as a first argument the Scan ID, second the working point, third the directory for on/out muon window  and all HV points.  
 Working point can be Loose, Medium, Tight. 
@@ -80,7 +81,8 @@ And finally, the macro that produces the S curve:
 root -l -b -q 'eff_curve.C(508,"Medium")'
 ```
 
-
-
-
-
+```
+cd /home/acqcmsmu/FEB_DAQ/Analysis/AnalysisiRPC/
+source init.sh
+python3 dreff.py 508 Loose
+``` 
