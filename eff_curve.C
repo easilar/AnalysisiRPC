@@ -152,7 +152,7 @@ std::cout << "eff_on.at(" << j << "): " << eff_on.at(j) << "; " << "eff_out.at("
 
 
 
-		TF1* sigmoid = new TF1("sigmoid","(1-sqrt((1-[0])*(1-[0])))/(1+exp([1]*([2]-x)))",6000,7400);
+		TF1* sigmoid = new TF1("sigmoid","(1-sqrt((1-[0])*(1-[0])))/(1+exp([1]*([2]-x)))",6000,7500);
 		sigmoid->SetParName(0,"#epsilon_{max}");
 		sigmoid->SetParName(1,"#lambda");
 		sigmoid->SetParName(2,"HV_{50%}");

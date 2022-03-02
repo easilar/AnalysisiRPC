@@ -49,9 +49,9 @@ void ana_FEBv2::Loop()
 	vector<double> HR_to_conctor_vec;
 	HR_to_conctor_vec.clear();
 
-	HR_to_conctor_vec = Aligment_factor(sn_,1,1);
-        LR_to_conctor_vec = Aligment_factor(sn_,2,1);
-        Strip_length_vec = Aligment_factor(sn_,3,1);
+	HR_to_conctor_vec = Aligment_factor(sn_,1,2);
+        LR_to_conctor_vec = Aligment_factor(sn_,2,2);
+        Strip_length_vec = Aligment_factor(sn_,3,2);
 
         double HR_to_conctor[48];
         for(int ii=0;ii<HR_to_conctor_vec.size();ii++){
@@ -207,6 +207,7 @@ void ana_FEBv2::Loop()
 	TH1F *htrig= new TH1F("htrig", "trigger time",91000,0,91000);
 	fChain->Draw("m_time(m_traw(frame))>>htrig","(m_channel(frame)==33)");
 	std::cout<<"All triggers /3 : "<< (htrig->Integral())/3 << std::endl;
+	last_bc0 = (htrig->Integral())/3;
 	//run_duration_in_sec = ((htrig->Integral())/3 )*90*pow(10,-6); 
 
 	std::cout<<"The data taking time is : "<< run_duration_in_sec <<std::endl;
