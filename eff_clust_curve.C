@@ -2,7 +2,7 @@
 #include<stdio.h>
 
 
-void eff_curve(int sn, int count, ...){
+void eff_clust_curve(int sn, int count, ...){
 
 	std::vector<char *> wp;
 	wp.push_back("Or");
@@ -113,6 +113,35 @@ void eff_curve(int sn, int count, ...){
 	}
 
 
+	vector<double> clust_size_v;
+        vector<double> clust_mult_v;
+	clust_size_v.clear();
+	clust_mult_v.clear();
+
+
+
+        for(int j=0; j<count; j++){
+                string fileName("");
+                fileName = Form("ScanId_%d/HV%d/plots_904/_HV_%d_SN_%d_MaxTrig_Cluster_size.root",sn,(j+1),(j+1),sn);
+                TFile _file0(fileName.c_str(),"read");
+                TCanvas* n =(TCanvas*)_file0.Get("cPairsC");
+                TPad* nn =(TPad*)n->GetPrimitive("padPC");
+                TH1F *mm = (TH1F*)nn->GetPrimitive("hClusterSize");
+                cout << mm->GetMean() << endl;
+                clust_size_v.push_back(mm->GetMean());
+        }
+
+        for(int j=0; j<count; j++){
+		string fileName("");
+		fileName = Form("ScanId_%d/HV%d/plots_904/_HV_%d_SN_%d_MaxTrig_N_Clusters.root",sn,(j+1),(j+1),sn);
+		TFile _file0(fileName.c_str(),"read");
+		TCanvas* n =(TCanvas*)_file0.Get("cPairsCC");
+		TPad* nn =(TPad*)n->GetPrimitive("padPCC");
+		TH1F *mm = (TH1F*)nn->GetPrimitive("hNClusters");
+		cout << mm->GetMean() << endl;
+		clust_mult_v.push_back(mm->GetMean());
+	}
+
 	//loop no wp
 	for(int i=0;i<wp.size();i++){
 		if(i==3) continue;
@@ -131,6 +160,10 @@ void eff_curve(int sn, int count, ...){
 		TGraphErrors* efficiency = new TGraphErrors();
                 TGraphErrors* efficiency_temp = new TGraphErrors();
 
+                TGraphErrors* g_clust_mult = new TGraphErrors();
+                TGraphErrors* g_clust_size = new TGraphErrors();
+
+
 		//loop HV
 		float HVmin = 6000;
                 float HVmax = 7400;
@@ -146,14 +179,31 @@ std::cout << "eff_on.at(" << j << "): " << eff_on.at(j) << "; " << "eff_out.at("
                         efficiency_temp->SetPoint(j,(HVs.at(j)*1000),eff_new);
                         efficiency_temp->SetPointError(j,10,sqrt(eff_new*(1-eff_new))/sqrt(1000));
 
+                        g_clust_mult->SetPoint(j,(HVs.at(j)*1000),clust_mult_v.at(j));
+                        g_clust_size->SetPoint(j,(HVs.at(j)*1000),clust_size_v.at(j));
+
+
 			if(j==0) HVmin = HVs.at(j)*1000;
                         if(j==(count-1)) HVmax = HVs.at(j)*1000;
 
 		}
 
+                /*efficiency->GetXaxis()->SetLimits(6000,7500);
+                efficiency_temp->GetXaxis()->SetLimits(6000,7500);
+                g_clust_mult->GetXaxis()->SetLimits(6000,7500);
+                g_clust_size->GetXaxis()->SetLimits(6000,7500);
+		*/
+
+        TCanvas *cg = new TCanvas("cg", "comp", 200, 10, 700, 500);
+        TPad *p1g = new TPad("p1g", "", 0, 0, 1, 1);
+        TPad *p2g = new TPad("p2g", "", 0, 0, 1, 1);
+        p2g->SetFillStyle(4000);
+        p1g->Draw();
+        p1g->cd();
 
 
-		TF1* sigmoid = new TF1("sigmoid","(1-sqrt((1-[0])*(1-[0])))/(1+exp([1]*([2]-x)))",6000,7500);
+
+		TF1* sigmoid = new TF1("sigmoid","(1-sqrt((1-[0])*(1-[0])))/(1+exp([1]*([2]-x)))",6000,7400);
 		sigmoid->SetParName(0,"#epsilon_{max}");
 		sigmoid->SetParName(1,"#lambda");
 		sigmoid->SetParName(2,"HV_{50%}");
@@ -164,7 +214,7 @@ std::cout << "eff_on.at(" << j << "): " << eff_on.at(j) << "; " << "eff_out.at("
 		efficiency->SetMarkerStyle(22);
 		efficiency->SetMarkerSize(2);
 		string sTitle = "; HVeff; Eff";
-		TH1D* Plotter = new TH1D("Plotter", sTitle.c_str(), 1, HVmin-100,HVmax+100);
+		TH1D* Plotter = new TH1D("Plotter", sTitle.c_str(), 1, HVmin-400,HVmax);
 		Plotter->SetStats(0);
 		Plotter->SetMinimum(0.);
 		Plotter->SetMaximum(1.08);
@@ -184,10 +234,10 @@ std::cout << "eff_on.at(" << j << "): " << eff_on.at(j) << "; " << "eff_out.at("
 		lWP->Draw("SAME");
 		double shift = 0.5;
 		double add = (uLimit-lLimit)/11., up = 0.3; 
-		ltx->DrawLatex(HVmin, 0.48, Form("Eff(WP) = %.2f", sigmoid->Eval(WP)));
-		ltx->DrawLatex(HVmin, 0.41, Form("WP = %.0f V", WP));
-		ltx->DrawLatex(HVmin, 0.34, Form("knee = %.0f V", knee));
-		ltx->DrawLatex(HVmin, 0.27, Form("HV 50% = %.0f V", p3));
+		ltx->DrawLatex(HVmin-300, 0.88, Form("Eff(WP) = %.2f", sigmoid->Eval(WP)));
+		ltx->DrawLatex(HVmin-300, 0.81, Form("WP = %.0f V", WP));
+		ltx->DrawLatex(HVmin-300, 0.74, Form("knee = %.0f V", knee));
+		ltx->DrawLatex(HVmin-300, 0.67, Form("HV 50% = %.0f V", p3));
 		TLine* plateau = new TLine(lLimit-50, p1, uLimit+50, p1);
 		plateau->SetLineStyle(2);
 		plateau->Draw();
@@ -195,15 +245,70 @@ std::cout << "eff_on.at(" << j << "): " << eff_on.at(j) << "; " << "eff_out.at("
 		if ((knee - lLimit) < (uLimit-lLimit)*(3/11.)) add = knee + add;
 		else add = lLimit+add;
 		ltx->DrawLatex(add, p1+0.02, Form("plateau = %.2f", p1));
+
+   TLegend* legend = new TLegend(0.14,0.4,0.45,0.55);
+   legend->SetTextFont(42);
+   legend->SetBorderSize(0);  // no border
+   legend->SetFillStyle(4000);
+   legend->SetFillColor(0);   // Legend background should be white
+   legend->SetTextSize(0.04); // Increase entry font size! 
+   legend->AddEntry(efficiency,"Efficiency","P");
+   legend->AddEntry(g_clust_mult,"Cluster Multiplicity","P");
+   legend->AddEntry(g_clust_size,"Cluster Size","P");
+   legend->Draw();
+
+
+        gPad->Update();
+
+        Double_t xmin = p1g->GetUxmin();
+        Double_t xmax = p1g->GetUxmax();
+        Double_t dx = (xmax - xmin) / 0.8; // 10 percent margins left and right
+        Double_t ymin = 0.;// g_clust_size->GetHistogram()->GetMinimum();
+        Double_t ymax = 10.;//g_clust_size->GetHistogram()->GetMaximum();
+        Double_t dy = (ymax - ymin) / 0.8; // 10 percent margins top and bottom
+        p2g->Range(xmin-0.1*dx, ymin-0.1*dy, xmax+0.1*dx, ymax+0.1*dy);
+    
+
+        p2g->Draw();
+        p2g->cd();
+
+        g_clust_mult->SetMarkerStyle(29);
+        g_clust_mult->SetMarkerSize(2);
+        g_clust_mult->SetMarkerColor(4);
+
+        g_clust_size->SetMarkerStyle(34);
+        g_clust_size->SetMarkerSize(2);
+        g_clust_size->SetMarkerColor(8);
+
+                
+	g_clust_size->Draw("P");
+        g_clust_mult->Draw("P SAME");
+
+        gPad->Update();
+        TGaxis *axis = new TGaxis(xmax, ymin, xmax, ymax, ymin, ymax, 510, "+L");
+        axis->SetTitle("Cluster Multiplicity and Size");
+	//axis->SetLineColor(kRed);
+        //axis->SetLabelColor(kRed);
+        axis->Draw();
+        gPad->Update();
+        cg->cd();
+        cg->Update();
+
+
 		string outfile = "Efficiency";
-		string outfile_png = Form("ScanId_%d/Efficiency_SN%d_%s.png", sn, sn, wp.at(i));
-		string outfile_pdf = Form("ScanId_%d/Efficiency_SN%d_%s.pdf", sn, sn, wp.at(i));
-		string outfile_root =Form("ScanId_%d/Efficiency_SN%d_%s.root", sn, sn, wp.at(i));
-		gPad->SaveAs(outfile_png.c_str());
+
+		string outfile_png = Form("ScanId_%d/Efficiency_Clust_SN%d_%s.png", sn, sn, wp.at(i));
+		string outfile_pdf = Form("ScanId_%d/Efficiency_Clust_SN%d_%s.pdf", sn, sn, wp.at(i));
+		string outfile_root =Form("ScanId_%d/Efficiency_Clust_SN%d_%s.root", sn, sn, wp.at(i));
+
+		cg->SaveAs(outfile_png.c_str());
+
 		gPad->SaveAs(outfile_pdf.c_str());
 		TFile* effout = new TFile(outfile_root.c_str(), "RECREATE");
 		effout->cd();
 		efficiency->Write("Efficiency");
+		g_clust_mult->Write("g_clust_mult");
+		g_clust_size->Write("g_clust_size");
 		effout->Close();  
 
 
