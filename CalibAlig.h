@@ -30,7 +30,7 @@ vector<int> Feb_Chamber(int sn_){
         if(sn_==293||sn_==296||sn_==297||sn_==298 ||sn_==299||sn_==300 || sn_==314 || sn_==315 ||sn_==317 || sn_==318 || sn_==321)  {feb_=14; chamber_=31;}
         if(sn_==294||sn_==295 || sn_==304 || sn_==309 || sn_==311 || sn_==320 || sn_==319)  {feb_=17; chamber_=31;} 
         if(sn_==711 || sn_==712 || (sn_>=714 && sn_<=752) )  {feb_=18; chamber_=31;} 
-        if((sn_>=753 && sn_<=768) )  {feb_=18; chamber_=41;} 
+        if((sn_>=753 && sn_<=770) )  {feb_=18; chamber_=41;} 
 
 // ADD HERE NEW SACN_ID AND IT FEB AND CHAMBER NUMBERS
 // EXAMPLE:

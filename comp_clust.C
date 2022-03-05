@@ -161,7 +161,7 @@ void comp_clust(){
 
 
         string fileName4("");
-        fileName4 = Form("ScanId_759/Efficiency_Clust_SN759_%s.root",wp.at(ii));
+        fileName4 = Form("ScanId_768/Efficiency_Clust_SN768_%s.root",wp.at(ii));
         TFile file_5(fileName4.c_str(),"read");
 	TGraphErrors *efficiency_5 = (TGraphErrors*)file_5.Get("Efficiency");
 	TF1* sigmoid_5 = new TF1("sigmoid5","(1-sqrt((1-[0])*(1-[0])))/(1+exp([1]*([2]-x)))",6400,7200);

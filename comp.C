@@ -10,7 +10,7 @@ void comp(){
         wp.push_back("lr");
         for(int ii=0;ii<wp.size();ii++){
 
-
+		std::cout<<ii<<std::endl;
 
 
 	TCanvas *c = new TCanvas("c", "c",1200,900);
@@ -18,6 +18,7 @@ void comp(){
 	double HVmax = 7500;
 	double HVmin = 5900;
 	double uLimit = HVmax, lLimit = HVmin;
+	/*
         string fileName("");
         fileName = Form("ScanId_756/Efficiency_SN756_%s.root",wp.at(ii));
 	TFile file_2(fileName.c_str(),"read");
@@ -63,12 +64,12 @@ void comp(){
 	ltx_2->DrawLatex(5950, 0.22, Form("WP = %.0f V", WP_2));
 //	ltx_2->DrawLatex(7650, 0.14, Form("knee = %.0f V", knee_2));
 //	ltx_2->DrawLatex(7650, 0.07, Form("HV 50% = %.0f V", p3_2));
-
+*/
 
 
 
         string fileName2("");
-        fileName2 = Form("ScanId_757/Efficiency_SN757_%s.root",wp.at(ii));
+        fileName2 = Form("ScanId_769/Efficiency_Clust_SN769_%s.root",wp.at(ii));
         TFile file_3(fileName2.c_str(),"read");
 	TGraphErrors *efficiency_3 = (TGraphErrors*)file_3.Get("Efficiency");
 	TF1* sigmoid_3 = new TF1("sigmoid3","(1-sqrt((1-[0])*(1-[0])))/(1+exp([1]*([2]-x)))",6400,7200);
@@ -77,7 +78,7 @@ void comp(){
 	n_3=efficiency_3->GetN(); //get ploted array dimention
 	TGraphErrors* efficiency2_3 = new TGraphErrors();
 	for(Int_t i=0; i<n_3; i++) {
-		efficiency2_3->SetPoint(i,efficiency_3->GetPointX(i),efficiency_3->GetPointY(i));
+		efficiency2_3->SetPoint(i,efficiency_3->GetX()[i],efficiency_3->GetY()[i]);
 		efficiency2_3->SetPointError(i,efficiency_3->GetErrorX(i),efficiency_3->GetErrorY(i));
 	}
 	sigmoid_3->SetParName(0,"#epsilon_{max}");
@@ -110,7 +111,7 @@ void comp(){
 
 
         string fileName3("");
-        fileName3 = Form("ScanId_758/Efficiency_SN758_%s.root",wp.at(ii));
+        fileName3 = Form("ScanId_768/Efficiency_Clust_SN768_%s.root",wp.at(ii));
         TFile file_4(fileName3.c_str(),"read");
 	TGraphErrors *efficiency_4 = (TGraphErrors*)file_4.Get("Efficiency");
 	TF1* sigmoid_4 = new TF1("sigmoid4","(1-sqrt((1-[0])*(1-[0])))/(1+exp([1]*([2]-x)))",6400,7200);
@@ -119,7 +120,7 @@ void comp(){
 	n_4=efficiency_4->GetN(); //get ploted array dimention
 	TGraphErrors* efficiency2_4 = new TGraphErrors();
 	for(Int_t i=0; i<n_4; i++) {
-		efficiency2_4->SetPoint(i,efficiency_4->GetPointX(i),efficiency_4->GetPointY(i));
+		efficiency2_4->SetPoint(i,efficiency_4->GetX()[i],efficiency_4->GetY()[i]);
 		efficiency2_4->SetPointError(i,efficiency_4->GetErrorX(i),efficiency_4->GetErrorY(i));
 	}
 	sigmoid_4->SetParName(0,"#epsilon_{max}");
@@ -150,9 +151,9 @@ void comp(){
 
 
 
-
+/**
         string fileName4("");
-        fileName4 = Form("ScanId_759/Efficiency_SN759_%s.root",wp.at(ii));
+        fileName4 = Form("ScanId_768/Efficiency_SN768_%s.root",wp.at(ii));
         TFile file_5(fileName4.c_str(),"read");
 	TGraphErrors *efficiency_5 = (TGraphErrors*)file_5.Get("Efficiency");
 	TF1* sigmoid_5 = new TF1("sigmoid5","(1-sqrt((1-[0])*(1-[0])))/(1+exp([1]*([2]-x)))",6400,7200);
@@ -199,7 +200,7 @@ void comp(){
         ltxLeg2->SetTextSize(0.035);
         ltxLeg2->SetTextColor(4);
         ltxLeg2->DrawLatex(5950, 0.99, "Source OFF; 40ns deadtime");
-
+*/
         TLatex* ltxLeg3= new TLatex();
         ltxLeg3->SetTextSize(0.035);
         ltxLeg3->SetTextColor(8);
@@ -208,7 +209,7 @@ void comp(){
         TLatex* ltxLeg4= new TLatex();
         ltxLeg4->SetTextSize(0.035);
         ltxLeg4->SetTextColor(6);
-        ltxLeg4->DrawLatex(5950, 0.87, "Source 4.6; AUTORESET ON");
+        ltxLeg4->DrawLatex(5950, 0.87, "Source 2.2; AUTORESET ON");
 
 
         string fileName9("");
